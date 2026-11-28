@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ukázka pro Autoservis Miroslav Číž – AI asistent na web | Firma MP</title>
+<!--
+  DEMO: AI chatbot na web – 3 úrovně (Normální / Premium / Premium Max) × obory. Jarvis.
+  Úrovně se liší FUNKCEMI (vzhled je stejný). Přepínač úrovně a oboru je nahoře – na schůzce klikni a ukaž rozdíl.
+  Pro konkrétní firmu: v configu nastav "obor": "vlastni" a vyplň "vlastni" ve formátu OBORY (ceny jen ověřené, jinak null),
+  případně "prepinace": false (klient uvidí jen svou firmu) a "uroven" podle nabídky.
+  Odkaz s nastavením: rezervace.html?uroven=max&obor=hotel
+  Demo je offline: „AI“ tu simuluje porozumění klíčovými slovy. Ostrá verze běží na jazykovém modelu (Claude)
+  nad znalostmi firmy. Data dema jsou jen v prohlížeči.
+-->
+<script id="config" type="application/json">
+{
+ "rezim": "web",
+ "aplikace": "whatsapp",
+ "uroven": "premium",
+ "obor": "vlastni",
+ "prepinace": true,
+ "ukazat_ceny": false,
+ "ceny": {
+  "normal": "2 990 Kč + 290 Kč/měs.",
+  "premium": "5 990 Kč + 590 Kč/měs.",
+  "max": "9 990 Kč + 990 Kč/měs."
+ },
+ "autor": "Michal Stonawski",
+ "vlastni": {
+  "obor": "Autoservis",
+  "ikona": "⚙",
+  "nazev": "Autoservis Miroslav Číž",
+  "slogan": "Více než 25 let se staráme o vozy zákazníků z Krnova a okolí.",
+  "bot": "Eva",
+  "adresa": "Hlubčická 52, 794 01 Krnov",
+  "telefon": "+420 603 285 566",
+  "email": "info@autoservis-krnov.cz",
+  "barva": "#9f2b24",
+  "lide": [
+   "Miroslav Číž",
+   "Bohuslav Číž"
+  ],
+  "rezervace": "termin",
+  "doporuc": {},
+  "faq": [
+   {
+    "k": [
+     "cena",
+     "ceník",
+     "kolik",
+     "hodina"
+    ],
+    "k2": [
+     "mechanické",
+     "práce",
+     "sazba"
+    ],
+    "a": "Základní mechanické práce 500 Kč/hod., pokročilé (klempířské, elektro, motory, převodovky, rozvody) 800 Kč/hod. Ceny jsou bez DPH, ceník platí k 1. 1. 2026."
+   },
+   {
+    "k": [
+     "klimatizace",
+     "klima",
+     "chladivo"
+    ],
+    "k2": [
+     "plnění",
+     "r134a",
+     "r1234yf"
+    ],
+    "a": "Plnění R134a 400 Kč (chladivo 3 Kč/g), plnění R1234yf včetně analýzy 600 Kč (chladivo 6 Kč/g), detekce úniku vodíkem od 1 500 Kč. Ceny bez DPH."
+   },
+   {
+    "k": [
+     "pneu",
+     "pneumatiky",
+     "uskladnění"
+    ],
+    "k2": [
+     "přezutí",
+     "sezóna",
+     "sklad"
+    ],
+    "a": "Uskladnění pneumatik 500 Kč za sadu na 1 sezónu (bez DPH). Cenu přezutí a vyvážení Vám sdělíme v servisu."
+   },
+   {
+    "k": [
+     "otevřeno",
+     "otvírací",
+     "kdy"
+    ],
+    "k2": [
+     "hodiny",
+     "doba"
+    ],
+    "a": "Pondělí až pátek 6:30–16:00, Hlubčická 52, Krnov."
+   },
+   {
+    "k": [
+     "kontakt",
+     "telefon",
+     "volat"
+    ],
+    "k2": [
+     "číslo",
+     "e-mail"
+    ],
+    "a": "Miroslav Číž 603 285 566, Bohuslav Číž 777 426 507, e-mail info@autoservis-krnov.cz."
+   },
+   {
+    "k": [
+     "stk",
+     "technická"
+    ],
+    "k2": [
+     "příprava",
+     "kontrola"
+    ],
+    "a": "Auto Vám připravíme na STK a zajistíme ji."
+   }
+  ],
+  "hodiny": {
+   "po": [
+    "06:30",
+    "16:00"
+   ],
+   "ut": [
+    "06:30",
+    "16:00"
+   ],
+   "st": [
+    "06:30",
+    "16:00"
+   ],
+   "ct": [
+    "06:30",
+    "16:00"
+   ],
+   "pa": [
+    "06:30",
+    "16:00"
+   ],
+   "so": null,
+   "ne": null
+  },
+  "sluzby": [
+   {
+    "id": "zakladni-mechanicke-prac",
+    "nazev": "Základní mechanické práce (za hodinu, bez DPH)",
+    "cena": 500,
+    "minuty": 60
+   },
+   {
+    "id": "pokrocile-mechanicke-pra",
+    "nazev": "Pokročilé mechanické práce (za hodinu, bez DPH)",
+    "cena": 800,
+    "minuty": 60
+   },
+   {
+    "id": "plneni-klimatizace-r134a",
+    "nazev": "Plnění klimatizace R134a (bez DPH, chladivo 3 Kč/g)",
+    "cena": 400,
+    "minuty": 60
+   },
+   {
+    "id": "plneni-klimatizace-r1234",
+    "nazev": "Plnění klimatizace R1234yf vč. analýzy (bez DPH, chladivo 6 Kč/g)",
+    "cena": 600,
+    "minuty": 60
+   },
+   {
+    "id": "detekce-uniku-chladiva-v",
+    "nazev": "Detekce úniku chladiva vodíkem (od, bez DPH)",
+    "cena": 1500,
+    "minuty": 60
+   },
+   {
+    "id": "uskladneni-pneumatik-sad",
+    "nazev": "Uskladnění pneumatik (sada / 1 sezóna, bez DPH)",
+    "cena": 500,
+    "minuty": 15
+   },
+   {
+    "id": "pneuservis-prezuti-a-vyv",
+    "nazev": "Pneuservis – přezutí a vyvážení",
+    "cena": null,
+    "minuty": 45
+   },
+   {
+    "id": "priprava-a-zajisteni-stk",
+    "nazev": "Příprava a zajištění STK",
+    "cena": null,
+    "minuty": 90
+   },
+   {
+    "id": "autodiagnostika",
+    "nazev": "Autodiagnostika",
+    "cena": null,
+    "minuty": 30
+   },
+   {
+    "id": "oprava-brzdoveho-systemu",
+    "nazev": "Oprava brzdového systému",
+    "cena": null,
+    "minuty": 120
+   },
+   {
+    "id": "vymena-oleje-v-automatic",
+    "nazev": "Výměna oleje v automatické převodovce",
+    "cena": null,
+    "minuty": 90
+   },
+   {
+    "id": "vymena-rozvodu-motoru",
+    "nazev": "Výměna rozvodů motoru",
+    "cena": null,
+    "minuty": 240
+   }
+  ]
+ }
+}
+</script>
+<style>
+:root{--b:#B0577A;--ink:#111827;--soft:#6B7280;--line:#E5E7EB;--bg:#F7F7F8;--paper:#fff;--ok:#16A34A;--warn:#D97706;--r:16px;
+ --f:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{font:15px/1.5 var(--f);color:var(--ink);background:var(--bg);min-height:100vh}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer;background:none;border:0}
+:focus-visible{outline:2px solid var(--b);outline-offset:2px}
+/* lišta dema */
+.db{position:sticky;top:0;z-index:30;background:#0F172A;color:#E2E8F0;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:8px 16px;font-size:13px}
+.db b{color:#fff;font-weight:600}
+.seg{display:inline-flex;background:#1E293B;border-radius:10px;padding:3px}
+.seg button{padding:5px 12px;border-radius:8px;color:#CBD5E1;font-weight:600;font-size:13px}
+.seg button[aria-pressed=true]{background:#fff;color:#0F172A}
+.db select{background:#1E293B;border:0;border-radius:8px;padding:6px 8px;color:#fff}
+.db .sp{flex:1}
+.db .lnk{color:#CBD5E1;text-decoration:underline;font-size:13px}
+.db .lnk[disabled]{opacity:.45;cursor:not-allowed;text-decoration:none}
+/* ukázkový web firmy */
+.site{max-width:1100px;margin:0 auto;padding:0 24px 120px}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+.nav .logo{font-weight:700;font-size:20px;display:flex;align-items:center;gap:10px}
+.nav .logo i{font-style:normal;width:34px;height:34px;border-radius:10px;background:var(--b);color:#fff;display:grid;place-items:center}
+.nav span{color:var(--soft);font-size:14px}
+.hero{padding:56px 0 40px;max-width:640px}
+.hero small{color:var(--b);font-weight:600}
+.hero h1{font-size:clamp(34px,5vw,56px);line-height:1.08;letter-spacing:-.02em;margin:8px 0 14px}
+.hero p{color:var(--soft);font-size:17px}
+.hero .cta{display:inline-block;margin-top:22px;background:var(--b);color:#fff;font-weight:600;padding:13px 22px;border-radius:12px}
+.svcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:10px}
+.svcs div{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px}
+.svcs b{display:block}.svcs span{color:var(--soft);font-size:14px}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.info div{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;font-size:14px}
+.info h3{font-size:15px;margin-bottom:6px}
+/* panel funkcí úrovně */
+.feat{position:fixed;left:16px;bottom:16px;z-index:20;width:300px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 20px 50px -20px rgba(15,23,42,.35);padding:16px 16px 12px;font-size:13px}
+.feat h2{font-size:15px;margin-bottom:2px}.feat .pr{color:var(--soft);margin-bottom:8px}
+.feat ul{list-style:none;display:grid;gap:5px}
+.feat li{display:flex;gap:8px;align-items:flex-start}
+.feat li i{font-style:normal;width:16px;flex:none;text-align:center;font-weight:700;color:var(--ok)}
+.feat li.off{color:#9CA3AF}.feat li.off i{color:#9CA3AF}
+.feat li.new{font-weight:600}
+.feat li small{color:#9CA3AF;font-weight:400}
+.feat .x{position:absolute;right:10px;top:8px;color:var(--soft);font-size:18px}
+/* chat widget */
+.cw{position:fixed;right:20px;bottom:20px;z-index:25;width:380px;height:min(640px,calc(100vh - 90px));background:var(--paper);border-radius:22px;box-shadow:0 30px 80px -24px rgba(15,23,42,.45);display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line)}
+.cw[hidden]{display:none}
+.ch{background:var(--b);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.ch .av{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;font-weight:700;font-size:17px;flex:none}
+.ch b{display:block;font-size:15px}.ch small{opacity:.9;font-size:12px;display:flex;align-items:center;gap:6px}
+.ch small i{width:8px;height:8px;border-radius:50%;background:#4ADE80;display:inline-block}.ch small i.off{background:#FBBF24}
+.ch .cl{margin-left:auto;color:#fff;font-size:22px;opacity:.85;padding:0 4px}
+.msgs{flex:1;overflow-y:auto;padding:16px 14px 6px;display:flex;flex-direction:column;gap:8px;background:#FAFAFB}
+.m{max-width:84%;padding:9px 13px;border-radius:16px;font-size:14px;line-height:1.45;white-space:pre-line;animation:in .18s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.m.bot{background:var(--paper);border:1px solid var(--line);border-bottom-left-radius:6px;align-self:flex-start}
+.m.me{background:var(--b);color:#fff;border-bottom-right-radius:6px;align-self:flex-end}
+.m.hum{background:#ECFDF5;border:1px solid #A7F3D0;align-self:flex-start;border-bottom-left-radius:6px}
+.m.hum small,.m.bot small{display:block;font-size:11px;color:var(--soft);margin-bottom:2px}
+.m.sys{align-self:center;background:none;color:var(--soft);font-size:12px;padding:2px}
+.m a{color:inherit}
+.typing{align-self:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:10px 14px;display:flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:#9CA3AF;animation:tp 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes tp{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.qr{display:flex;flex-wrap:wrap;gap:6px;padding:6px 14px 10px;background:#FAFAFB}
+.qr button{border:1px solid var(--b);color:var(--b);background:var(--paper);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.qr button:hover{background:var(--b);color:#fff}
+.in{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line);background:var(--paper)}
+.in input{flex:1;min-width:0;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.in input:focus{outline:none;border-color:var(--b)}
+.in button{width:42px;border-radius:12px;background:var(--b);color:#fff;display:grid;place-items:center}
+.in .mic{background:var(--bg);color:var(--ink)}.in .mic.on{background:#FEE2E2;color:#DC2626}
+.in svg{width:18px;height:18px;fill:currentColor}
+.foot{font-size:11px;color:#9CA3AF;text-align:center;padding:0 0 8px;background:var(--paper)}
+.lau{position:fixed;right:20px;bottom:20px;z-index:24;width:62px;height:62px;border-radius:50%;background:var(--b);color:#fff;box-shadow:0 14px 30px -10px rgba(15,23,42,.5);display:grid;place-items:center}
+.lau svg{width:28px;height:28px;fill:#fff}
+/* toast */
+.toast{position:fixed;left:50%;top:60px;transform:translateX(-50%);z-index:40;background:#0F172A;color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:min(560px,92vw);display:none}
+.toast.on{display:block;animation:in .2s}
+/* modály */
+.ov{position:fixed;inset:0;z-index:50;background:rgba(15,23,42,.55);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+.ov.on{display:flex}
+.box{background:var(--paper);border-radius:20px;width:min(980px,100%);padding:26px;position:relative}
+.box h2{font-size:24px;margin-bottom:4px}.box .sub{color:var(--soft);margin-bottom:18px}
+.box .x{position:absolute;right:16px;top:12px;font-size:24px;color:var(--soft)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:center}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:15px}thead th.cur{color:var(--b)}
+td.y{color:var(--ok);font-weight:700}td.n{color:#D1D5DB}
+tfoot td{font-weight:700;border:0;padding-top:14px}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.kpi div{background:var(--bg);border-radius:14px;padding:14px}.kpi span{display:block;color:var(--soft);font-size:13px}.kpi b{font-size:26px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cols h3{font-size:15px;margin-bottom:8px}
+.bars div{display:grid;grid-template-columns:150px 1fr 40px;gap:8px;align-items:center;font-size:13px;margin-bottom:6px}
+.bars i{display:block;height:8px;border-radius:4px;background:var(--b)}
+.list{font-size:13px}.list div{padding:7px 0;border-bottom:1px solid var(--line)}.list small{color:var(--soft)}
+.tag{display:inline-block;font-size:11px;background:var(--bg);border-radius:6px;padding:1px 6px;color:var(--soft);margin-left:4px}
+/* režim bot v telefonu (WhatsApp / Telegram) */
+body.msg{background:#E8ECF1}
+body.msg .site,body.msg .lau,body.msg .ch .cl{display:none!important}
+body.msg .cw{left:50%;right:auto;transform:translateX(-50%);top:64px;bottom:18px;height:auto;width:392px;border-radius:42px;border:11px solid #0F172A;box-shadow:0 40px 90px -30px rgba(15,23,42,.6)}
+body.msg .ch{padding:30px 16px 12px}
+body.msg .msgs{background:#EFEAE2}
+body.msg .m{border-radius:10px;border:0;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+body.msg .m.bot,body.msg .m.hum{background:#fff}
+body.msg .m.me{background:#D9FDD3;color:#111827}
+body.msg .m.sys{box-shadow:none;background:rgba(255,255,255,.7);border-radius:8px;padding:2px 10px}
+body.msg .qr{display:grid;grid-template-columns:1fr 1fr;background:#EFEAE2;gap:5px}
+body.msg .qr button{border:0;border-radius:8px;background:#fff;color:var(--app);box-shadow:0 1px 1px rgba(0,0,0,.08)}
+body.msg .qr button:hover{background:#F3F4F6;color:var(--app)}
+body.msg .in{background:#F0F2F5;border:0}body.msg .in input{border-radius:20px;border:0}body.msg .in button{border-radius:50%;background:var(--app);height:42px}
+body.msg .in .mic{background:#fff;color:#54656F}
+body.msg[data-app=whatsapp]{--app:#0B6E5F}body.msg[data-app=whatsapp] .ch{background:#0B6E5F}
+body.msg[data-app=telegram]{--app:#3A8BD8}body.msg[data-app=telegram] .ch{background:#3A8BD8}body.msg[data-app=telegram] .msgs,body.msg[data-app=telegram] .qr{background:#D7E4D0}
+body.msg[data-app=telegram] .m.me{background:#E2F8CF}
+.vm{display:flex;align-items:center;gap:8px;min-width:190px}.vm b{width:28px;height:28px;border-radius:50%;background:var(--app);color:#fff;display:grid;place-items:center;font-size:12px}
+.vm i{flex:1;height:18px;background:repeating-linear-gradient(90deg,#94A3B8 0 2px,transparent 2px 5px);mask:linear-gradient(90deg,#000 0 30%,rgba(0,0,0,.5) 30% 60%,#000 60%);opacity:.8}
+.feed{display:none;position:fixed;right:16px;top:64px;bottom:16px;width:320px;z-index:20;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 20px 50px -20px rgba(15,23,42,.35);padding:16px;overflow-y:auto;font-size:13px}
+body.msg .feed{display:block}
+.feed h2{font-size:15px}.feed p{color:var(--soft);margin:2px 0 10px}
+.feed .it{padding:8px 10px;background:var(--bg);border-radius:10px;margin-bottom:6px;animation:in .25s}.feed .it small{display:block;color:var(--soft);font-size:11px}
+.feed .act{display:grid;gap:6px;margin:10px 0 14px}.feed .act button{border:1px solid var(--line);border-radius:10px;padding:8px 10px;text-align:left;font-weight:600}
+.feed .act button[aria-disabled=true]{color:#9CA3AF}
+@media (max-width:1180px){body.msg .feed{display:none}}
+@media (max-width:560px){body.msg .cw{left:0;transform:none;top:0;bottom:0;width:100%;border:0;border-radius:0}body.msg .ch{padding-top:14px}}
+@media (min-width:1180px){.site{max-width:none;margin:0 420px 0 340px;padding:0 28px 120px}.nofeat .site{margin-left:40px}}
+@media (max-width:820px){.feat{display:none}.feat.on{display:block;left:10px;right:10px;width:auto;bottom:90px}.info{grid-template-columns:1fr}.cols{grid-template-columns:1fr}.kpi{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.cw{right:0;bottom:0;width:100%;height:100%;border-radius:0;z-index:45}.site{padding:0 16px 110px}.hero{padding:30px 0}.box{padding:20px 16px}.bars div{grid-template-columns:110px 1fr 34px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<style>#ob{display:none!important}.mp-ceduka{font:13px/1.5 system-ui,sans-serif;color:#555;background:#f4f4f5;border-top:1px solid #e4e4e7;padding:14px 18px 90px;text-align:center}.mp-ceduka a{color:inherit}</style>
+</head>
+<body>
+<div class="db" id="db">
+ <b id="dtit">Demo · AI chatbot</b>
+ <select id="app" aria-label="Aplikace" hidden><option value="whatsapp">WhatsApp</option><option value="telegram">Telegram</option></select>
+ <span class="seg" id="lv" role="group" aria-label="Úroveň"><button data-u="normal">Normální</button><button data-u="premium">Premium</button><button data-u="max">Premium Max</button></span>
+ <select id="ob" aria-label="Obor"></select>
+ <span class="sp"></span>
+ <button class="lnk" id="cmp">Srovnání úrovní</button>
+ <button class="lnk" id="fbtn">Co umí tato úroveň</button>
+ <button class="lnk" id="dbtn">Přehled majitele</button>
+ <button class="lnk" id="rst">Začít znovu</button>
+</div>
+<main class="site" id="site"></main>
+<aside class="feat" id="feat" aria-live="polite"></aside>
+<button class="lau" id="lau" aria-label="Otevřít chat" hidden><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2z"/></svg></button>
+<section class="cw" id="cw" aria-label="Chat s asistentem">
+ <div class="ch"><div class="av" id="av"></div><div><b id="bn"></b><small><i id="dot"></i><span id="bs"></span></small></div><button class="cl" id="cl" aria-label="Zavřít chat">×</button></div>
+ <div class="msgs" id="msgs" role="log" aria-live="polite"></div>
+ <div class="qr" id="qr"></div>
+ <form class="in" id="in" autocomplete="off"><button type="button" class="mic" id="mic" aria-label="Zadat hlasem" hidden><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2z"/></svg></button><input id="q" placeholder="Napište zprávu…" aria-label="Zpráva"><button aria-label="Odeslat"><svg viewBox="0 0 24 24"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></button></form>
+ <div class="foot" id="foot"></div>
+</section>
+<aside class="feed" id="feedp" aria-live="polite"><h2>Co vidí majitel</h2><p id="feedi"></p><div class="act"><button id="hlv">▶ Zákazník pošle hlasovou zprávu</button><button id="kamp">📣 Poslat akci stálým zákazníkům</button></div><div id="feed"></div></aside>
+<div class="toast" id="toast" role="status"></div>
+<div class="ov" id="ovc"><div class="box" role="dialog" aria-modal="true" aria-labelledby="cmph"><button class="x" data-close>×</button><h2 id="cmph">Srovnání úrovní</h2><p class="sub">Všechny úrovně vypadají stejně, liší se tím, co chatbot umí.</p><div id="cmpt"></div></div></div>
+<div class="ov" id="ovd"><div class="box" role="dialog" aria-modal="true" aria-labelledby="dh"><button class="x" data-close>×</button><h2 id="dh">Přehled pro majitele</h2><p class="sub" id="dsub"></p><div id="dash"></div></div></div>
+<script>
+/* ===== Jarvis dema – oborové předvolby (sdílené pro chatbot, Telegram bota, web, e-shop…) =====
+   Všechny firmy, ceny a kontakty jsou VYMYŠLENÉ ukázky. Pro skutečného klienta Jarvis vytvoří "vlastni"
+   předvolbu ve stejném formátu jen z ověřených údajů (ceny z webu klienta, jinak cena null = dle domluvy). */
+var OBORY = {
+ univerzalni: {obor: 'Univerzální', ikona: '◆', nazev: 'Firma Ukázka', slogan: 'Služby, na které se můžete spolehnout.', bot: 'Eva',
+  adresa: 'Hlavní 1, Ostrava', telefon: '+420 600 000 000', email: 'info@firma-ukazka.cz', barva: '#2563EB', lide: ['Jana'],
+  hodiny: {po: ['08:00', '17:00'], ut: ['08:00', '17:00'], st: ['08:00', '17:00'], ct: ['08:00', '17:00'], pa: ['08:00', '15:00'], so: null, ne: null},
+  rezervace: 'termin',
+  sluzby: [{id: 'konzultace', nazev: 'Úvodní konzultace', cena: 0, minuty: 30}, {id: 'zakladni', nazev: 'Základní služba', cena: 990, minuty: 60},
+   {id: 'rozsirena', nazev: 'Rozšířená služba', cena: 1890, minuty: 90}, {id: 'servis', nazev: 'Měsíční servis', cena: 490, minuty: 30}],
+  doporuc: {zakladni: 'servis'},
+  faq: [{k: ['platba', 'kartou'], k2: ['zaplatit', 'hotove', 'qr', 'faktur'], a: 'Platit můžete kartou, hotově i převodem na fakturu.'},
+   {k: ['parkovani'], k2: ['zaparkovat', 'auto', 'parkovat'], a: 'Parkovat můžete zdarma přímo před budovou.'}]},
+ beauty: {obor: 'Beauty a wellness', ikona: '✿', nazev: 'Salon Aurora', slogan: 'Péče, po které se budete cítit skvěle.', bot: 'Lea',
+  adresa: 'Sokolská 18, Ostrava', telefon: '+420 600 111 222', email: 'ahoj@salon-aurora.cz', barva: '#B0577A', lide: ['Tereza', 'Nikola'],
+  hodiny: {po: ['09:00', '19:00'], ut: ['09:00', '19:00'], st: ['09:00', '19:00'], ct: ['09:00', '19:00'], pa: ['09:00', '17:00'], so: ['09:00', '13:00'], ne: null},
+  rezervace: 'termin',
+  sluzby: [{id: 'plet', nazev: 'Ošetření pleti', cena: 1190, minuty: 75}, {id: 'lash', nazev: 'Lash lifting', cena: 890, minuty: 60},
+   {id: 'oboci', nazev: 'Úprava obočí', cena: 390, minuty: 30}, {id: 'manikura', nazev: 'Manikúra s gel lakem', cena: 750, minuty: 75},
+   {id: 'masaz', nazev: 'Relaxační masáž', cena: 950, minuty: 60}, {id: 'strih', nazev: 'Dámský střih a foukaná', cena: 690, minuty: 60}],
+  doporuc: {lash: 'oboci', plet: 'masaz', strih: 'oboci'},
+  faq: [{k: ['poukaz', 'voucher'], k2: ['darek', 'darkov', 'narozenin'], a: 'Dárkové poukazy prodáváme na libovolnou částku i na konkrétní ošetření. Platí 6 měsíců.'},
+   {k: ['platba', 'kartou'], k2: ['zaplatit', 'hotove', 'qr'], a: 'Platit můžete kartou, hotově nebo QR kódem.'},
+   {k: ['tehotn'], k2: ['alergi', 'citliv'], a: 'U těhotenství nebo citlivé pleti vám kosmetička ošetření upraví. Napište nám to prosím do poznámky k rezervaci.'},
+   {k: ['parkovani'], k2: ['zaparkovat', 'parkovat'], a: 'Parkovat můžete v ulici Sokolská (modrá zóna) nebo v garážích OC 200 m od nás.'}]},
+ barber: {obor: 'Barbershop', ikona: '✂', nazev: 'Barber Ocel', slogan: 'Střih, vousy, horký ručník.', bot: 'Max',
+  adresa: 'Nádražní 12, Ostrava', telefon: '+420 600 222 333', email: 'rezervace@barber-ocel.cz', barva: '#B8893B', lide: ['Marek', 'Ondra'],
+  hodiny: {po: ['10:00', '20:00'], ut: ['10:00', '20:00'], st: ['10:00', '20:00'], ct: ['10:00', '20:00'], pa: ['10:00', '20:00'], so: ['09:00', '14:00'], ne: null},
+  rezervace: 'termin',
+  sluzby: [{id: 'strih', nazev: 'Pánský střih', cena: 450, minuty: 45}, {id: 'strihvousy', nazev: 'Střih a vousy', cena: 690, minuty: 75},
+   {id: 'vousy', nazev: 'Úprava vousů', cena: 320, minuty: 30}, {id: 'britva', nazev: 'Holení břitvou', cena: 420, minuty: 40}, {id: 'detsky', nazev: 'Dětský střih', cena: 300, minuty: 30}],
+  doporuc: {strih: 'vousy', vousy: 'britva'},
+  faq: [{k: ['bez objednani', 'walk'], k2: ['prijit jen tak', 'bez rezervace', 'hned'], a: 'Bez objednání to zkusit můžete, ale s rezervací nečekáte. Volné časy vám najdu hned tady.'},
+   {k: ['platba', 'kartou'], k2: ['zaplatit', 'hotove'], a: 'Bereme karty i hotovost.'},
+   {k: ['poukaz', 'voucher'], k2: ['darek', 'darkov'], a: 'Dárkový poukaz koupíte u nás na místě na jakoukoli službu.'}]},
+ autoservis: {obor: 'Autoservis', ikona: '⚙', nazev: 'Autoservis Rychlík', slogan: 'Servis, pneu a STK bez starostí.', bot: 'Tom',
+  adresa: 'Průmyslová 5, Ostrava', telefon: '+420 600 333 444', email: 'servis@autorychlik.cz', barva: '#D9480F', lide: ['Petr'],
+  hodiny: {po: ['07:00', '17:00'], ut: ['07:00', '17:00'], st: ['07:00', '17:00'], ct: ['07:00', '17:00'], pa: ['07:00', '15:00'], so: null, ne: null},
+  rezervace: 'termin',
+  sluzby: [{id: 'prezuti', nazev: 'Přezutí pneu (4 kola)', cena: 800, minuty: 45}, {id: 'olej', nazev: 'Výměna oleje a filtru', cena: 1290, minuty: 45},
+   {id: 'servis', nazev: 'Pravidelný servis', cena: null, minuty: 120}, {id: 'stk', nazev: 'Příprava na STK', cena: 990, minuty: 90},
+   {id: 'klima', nazev: 'Plnění klimatizace', cena: 1190, minuty: 60}, {id: 'diag', nazev: 'Diagnostika závady', cena: 690, minuty: 45}],
+  doporuc: {prezuti: 'olej', stk: 'klima'},
+  faq: [{k: ['nahradni auto', 'zapujc'], k2: ['odvoz', 'pujcit auto'], a: 'Na delší opravy vám můžeme zapůjčit náhradní vůz. Domluvte si ho prosím předem.'},
+   {k: ['uskladneni', 'pneuhotel'], k2: ['uschovat', 'uskladnit', 'kola'], a: 'Pneumatiky vám uskladníme za 600 Kč na sezónu.'},
+   {k: ['platba', 'kartou'], k2: ['zaplatit', 'faktur'], a: 'Platit můžete kartou, hotově i na fakturu (firmy).'},
+   {k: ['jak dlouho', 'cekat'], k2: ['pockam', 'kdy hotovo', 'doba'], a: 'Přezutí a výměnu oleje zvládneme do hodiny, můžete počkat v naší čekárně s kávou.'}]},
+ remeslo: {obor: 'Řemeslník', ikona: '⚒', nazev: 'Instalatérství Novák', slogan: 'Voda, topení, plyn. Rychle a pořádně.', bot: 'Pepa',
+  adresa: 'Ostrava a okolí do 30 km', telefon: '+420 600 444 555', email: 'zakazky@instalaternovak.cz', barva: '#0E7490', lide: ['Jirka'],
+  hodiny: {po: ['07:00', '18:00'], ut: ['07:00', '18:00'], st: ['07:00', '18:00'], ct: ['07:00', '18:00'], pa: ['07:00', '16:00'], so: ['08:00', '12:00'], ne: null},
+  rezervace: 'termin',
+  sluzby: [{id: 'vyjezd', nazev: 'Výjezd a prohlídka', cena: 490, minuty: 60}, {id: 'oprava', nazev: 'Oprava úniku vody', cena: null, minuty: 120},
+   {id: 'kotel', nazev: 'Servis kotle', cena: 1490, minuty: 90}, {id: 'koupelna', nazev: 'Rekonstrukce koupelny (zaměření)', cena: 0, minuty: 60},
+   {id: 'ucpane', nazev: 'Čištění odpadu', cena: 990, minuty: 60}],
+  doporuc: {kotel: 'vyjezd'},
+  faq: [{k: ['havarie', 'pohotovost'], k2: ['tece', 'prasklo', 'nonstop', 'urgent'], a: 'Při havárii volejte hned na pohotovostní linku. Mezitím zavřete hlavní uzávěr vody.'},
+   {k: ['kde', 'oblast'], k2: ['jezdite', 'dojed', 'okoli'], a: 'Jezdíme po Ostravě a okolí do 30 km. Výjezd v Ostravě je v ceně prohlídky.'},
+   {k: ['zaruka', 'garance'], k2: ['reklamac'], a: 'Na práci dáváme záruku 24 měsíců.'}]},
+ restaurace: {obor: 'Restaurace a kavárna', ikona: '☕', nazev: 'Bistro Na Rohu', slogan: 'Poctivé jídlo, dobrá káva.', bot: 'Rozi',
+  adresa: 'Stodolní 7, Ostrava', telefon: '+420 600 555 666', email: 'stoly@bistronarohu.cz', barva: '#2F855A', lide: ['Klára'],
+  hodiny: {po: ['11:00', '22:00'], ut: ['11:00', '22:00'], st: ['11:00', '22:00'], ct: ['11:00', '23:00'], pa: ['11:00', '24:00'], so: ['12:00', '24:00'], ne: ['12:00', '20:00']},
+  rezervace: 'stul',
+  sluzby: [{id: 'stul2', nazev: 'Stůl pro 2', cena: 0, minuty: 120}, {id: 'stul4', nazev: 'Stůl pro 4', cena: 0, minuty: 120},
+   {id: 'stul6', nazev: 'Stůl pro 6+', cena: 0, minuty: 150}, {id: 'akce', nazev: 'Firemní akce / oslava', cena: null, minuty: 240}],
+  menu: [{nazev: 'Polední menu (Po–Pá)', cena: 169}, {nazev: 'Smash burger s hranolky', cena: 289}, {nazev: 'Svíčková na smetaně', cena: 249}, {nazev: 'Caesar salát', cena: 219}, {nazev: 'Flat white', cena: 79}],
+  doporuc: {},
+  faq: [{k: ['menu', 'jidelni listek'], k2: ['co varite', 'jidlo', 'obed', 'poledni'], a: 'MENU'},
+   {k: ['rozvoz', 'dovoz'], k2: ['wolt', 'foodora', 'domu', 's sebou'], a: 'Rozvážíme přes Wolt a Foodoru, jídlo s sebou si můžete vyzvednout i u nás.'},
+   {k: ['vegan', 'bezlepk'], k2: ['vegetari', 'lepek', 'alergen'], a: 'Máme vegetariánská i veganská jídla a bezlepkovou variantu burgeru. Alergeny jsou v menu u každého jídla.'},
+   {k: ['pes', 'psi'], k2: ['pejsk', 'zvire'], a: 'Pejsci jsou u nás vítáni, misku s vodou rádi doneseme.'}]},
+ hotel: {obor: 'Hotel a penzion', ikona: '⌂', nazev: 'Hotel Beskydy View', slogan: 'Hory na dosah, klid na pokoji.', bot: 'Anna',
+  adresa: 'Pustevny 3, Prostřední Bečva', telefon: '+420 600 666 777', email: 'recepce@beskydyview.cz', barva: '#3B5BDB', lide: ['recepce'],
+  hodiny: {po: ['07:00', '22:00'], ut: ['07:00', '22:00'], st: ['07:00', '22:00'], ct: ['07:00', '22:00'], pa: ['07:00', '22:00'], so: ['07:00', '22:00'], ne: ['07:00', '22:00']},
+  rezervace: 'pobyt',
+  sluzby: [{id: 'dvoulozkovy', nazev: 'Dvoulůžkový pokoj', cena: 2490, minuty: 0}, {id: 'rodinny', nazev: 'Rodinný pokoj (4 os.)', cena: 3690, minuty: 0},
+   {id: 'apartma', nazev: 'Apartmá s výhledem', cena: 4590, minuty: 0}],
+  jednotka: 'noc',
+  doporuc: {dvoulozkovy: 'wellness', apartma: 'wellness'},
+  extra: [{id: 'wellness', nazev: 'Wellness balíček pro 2', cena: 990}],
+  faq: [{k: ['snidane', 'polopenze'], k2: ['jidlo', 'vecere', 'strava'], a: 'Snídaně formou bufetu je v ceně. Polopenzi dokoupíte za 450 Kč za osobu a noc.'},
+   {k: ['check in', 'prijezd', 'odjezd'], k2: ['check-in', 'check-out', 'kdy muzu prijet', 'ubytovani od'], a: 'Ubytování je od 14:00, odjezd do 10:00. Pozdní příjezd nám prosím dejte vědět.'},
+   {k: ['pes', 'psi'], k2: ['pejsk', 'zvire', 'mazlic'], a: 'Pejsci jsou vítáni za 300 Kč za noc.'},
+   {k: ['wellness', 'sauna'], k2: ['virivka', 'bazen', 'masaz'], a: 'Máme saunu a vířivku. Hosté mají 1 hodinu denně zdarma, další můžete rezervovat na recepci.'},
+   {k: ['parkovani'], k2: ['zaparkovat', 'auto', 'parkovat'], a: 'Parkování je pro hosty zdarma přímo u hotelu.'}]}
+};
+
+(function(){
+var C=JSON.parse(document.getElementById('config').textContent);
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+var qs=new URLSearchParams(location.search);
+var U=qs.get('uroven')||C.uroven||'premium',OB=qs.get('obor')||C.obor||'beauty';
+if(C.vlastni)OBORY.vlastni=C.vlastni;
+if(!OBORY[OB])OB='univerzalni';if(['normal','premium','max'].indexOf(U)<0)U='premium';
+var LV={normal:1,premium:2,max:3},NAZ={normal:'Normální',premium:'Premium',max:'Premium Max'};
+var MSG=(qs.get('rezim')||C.rezim)==='messenger',APP=qs.get('aplikace')||C.aplikace||'whatsapp';
+var FEAT=[
+ ['faq','Odpovídá na časté dotazy: otevírací doba, ceník, adresa, kontakt',1],
+ ['tlacitka','Rychlé volby jedním klepnutím',1],
+ ['kontakt','Když neví, nabídne telefon a e-mail',1],
+ ['ai','Upozorní, že je AI asistent (povinnost podle AI Act)',1],
+ ['rezervace','Rezervace termínu přímo v chatu',2],
+ ['lead','Sbírá poptávky a kontakty, majitel dostane e-mail',2],
+ ['volne','Rozumí i volně položeným dotazům',2],
+ ['mimo','Ví, kdy máte otevřeno, a mimo pracovní dobu nabídne zpětné volání',2],
+ ['preklepy','Rozumí překlepům a hovorové češtině',3],
+ ['jazyky','Odpovídá anglicky a německy',3],
+ ['upsell','Doporučí doplňkovou službu, takže zákazník utratí víc',3],
+ ['clovek','Předá konverzaci živému člověku',3],
+ ['hlas','Dotaz jde zadat hlasem',3,'web'],
+ ['pripominky','Den předem pošle připomínku termínu (méně nedorazivších)',2,'msg'],
+ ['hlasovky','Rozumí hlasovým zprávám',3,'msg'],
+ ['kampane','Akce a novinky stálým zákazníkům (jen se souhlasem, odhlášení STOP)',3,'msg'],
+ ['prehled','Přehled pro majitele: dotazy, poptávky a co bot neuměl',3]];
+FEAT=FEAT.filter(function(f){return !f[3]||f[3]===(MSG?'msg':'web')});
+function has(k){for(var i=0;i<FEAT.length;i++)if(FEAT[i][0]===k)return LV[U]>=FEAT[i][2];return false}
+var P,S,LANG='cs',busy=false;
+
+/* ---- text ---- */
+function norm(s){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim()}
+function lev(a,b){if(a===b)return 0;var m=a.length,n=b.length,d=[],i,j;for(i=0;i<=m;i++){d[i]=[i]}for(j=1;j<=n;j++)d[0][j]=j;
+ for(i=1;i<=m;i++)for(j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[m][n]}
+function obsahuje(t,tok,kw){kw=norm(kw);if(!kw)return false;if(kw.indexOf(' ')>=0)return (' '+t+' ').indexOf(' '+kw)>=0;
+ for(var i=0;i<tok.length;i++){if(tok[i].indexOf(kw)===0)return true;
+  if(has('preklepy')&&kw.length>=4&&tok[i].length>=kw.length-1){var lim=kw.length>=7?2:1;if(lev(tok[i].slice(0,kw.length),kw)<=lim)return true}}
+ return false}
+var DNY=['ne','po','ut','st','ct','pa','so'],DNYN=['Ne','Po','Út','St','Čt','Pá','So'],DNYL=['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'];
+function hm(m){return Math.floor(m/60)+':'+String(m%60).padStart(2,'0')}
+function mn(x){var p=x.split(':');return +p[0]*60+ +p[1]}
+function kc(x){return x==null?'dle domluvy':(+x?Number(x).toLocaleString('cs-CZ')+'\u00a0Kč':'zdarma')}
+function hodinyText(en){var o=[],dd=['po','ut','st','ct','pa','so','ne'],nm=en?['Mon','Tue','Wed','Thu','Fri','Sat','Sun']:['Po','Út','St','Čt','Pá','So','Ne'];
+ for(var i=0;i<7;i++){var h=P.hodiny[dd[i]],v=h?h[0].replace(/^0/,'')+'–'+h[1].replace(/^0/,''):(en?'closed':'zavřeno'),l=o[o.length-1];
+  if(l&&l.v===v)l.k=i;else o.push({z:i,k:i,v:v})}
+ return o.map(function(x){return nm[x.z]+(x.k>x.z?'–'+nm[x.k]:'')+' '+x.v}).join(', ')}
+function ted(){var d=new Date(),h=P.hodiny[DNY[d.getDay()]],m=d.getHours()*60+d.getMinutes();
+ if(h&&m>=mn(h[0])&&m<mn(h[1]))return{otevreno:true,do:h[1]};
+ for(var i=0;i<8;i++){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()+i),hh=P.hodiny[DNY[x.getDay()]];if(hh&&(i>0||m<mn(hh[0])))return{otevreno:false,kdy:(i===0?'dnes':i===1?'zítra':'v '+DNYL[x.getDay()].replace('středa','středu').replace('neděle','neděli').replace('sobota','sobotu'))+' v '+hh[0].replace(/^0/,'')}}
+ return{otevreno:false,kdy:'brzy'}}
+function sl(id){return P.sluzby.filter(function(s){return s.id===id})[0]||(P.extra||[]).filter(function(s){return s.id===id})[0]}
+
+/* ---- statistiky pro majitele (jen Max, jen v prohlížeči) ---- */
+function SK(){return 'chatdemo:'+OB}
+function st(){var x=null;try{x=JSON.parse(localStorage.getItem(SK()))}catch(e){}if(!x)x=seed();return x}
+function stUloz(x){try{localStorage.setItem(SK(),JSON.stringify(x))}catch(e){}}
+function seed(){var i=P.sluzby;return{konverzace:148,zpravy:612,auto:0.87,intent:{'Otevírací doba':41,'Ceník':37,'Rezervace':29,'Adresa a parkování':18,'Kontakt':11,'Ostatní':9},
+ nezodp:['Máte otevřeno i o svátcích?','Dá se platit stravenkami?','Děláte i svatební balíčky?'],
+ poptavky:[{cas:'dnes 9:12',text:'Rezervace: '+i[0].nazev+' – Lucie N.',u:1},{cas:'včera 18:40',text:'Poptávka: zavolat zpět – Tomáš K.',u:1},{cas:'včera 11:05',text:'Rezervace: '+(i[1]||i[0]).nazev+' – Eva S.',u:1}]}}
+function zaznam(intent,text,ok){if(!has('prehled'))return;var x=st();x.zpravy++;if(intent)x.intent[intent]=(x.intent[intent]||0)+1;if(!ok&&text){x.nezodp.unshift(text);x.nezodp=x.nezodp.slice(0,12)}stUloz(x)}
+function poptavka(text){var x=st();x.poptavky.unshift({cas:'teď',text:text});x.poptavky=x.poptavky.slice(0,15);if(has('prehled'))stUloz(x)}
+
+/* ---- web firmy ---- */
+function web(){document.documentElement.style.setProperty('--b',P.barva||'#2563EB');document.title=P.nazev+' – demo AI chatbota';
+ var svc=(P.menu||P.sluzby).slice(0,6);
+ $('site').innerHTML='<nav class="nav"><div class="logo"><i>'+esc(P.ikona||P.nazev.charAt(0))+'</i>'+esc(P.nazev)+'</div><span>'+esc(P.telefon)+'</span></nav>'+
+  '<section class="hero"><small>'+esc(P.obor)+'</small><h1>'+esc(P.slogan)+'</h1><p>'+esc(P.adresa)+'. Na cokoli se zeptejte našeho asistenta vpravo dole, odpovídá hned, i v noci.</p><button class="cta" id="cta">Napsat asistentovi</button></section>'+
+  '<div class="svcs">'+svc.map(function(s){return '<div><b>'+esc(s.nazev)+'</b><span>'+kc(s.cena)+(P.jednotka?' / '+P.jednotka:'')+(s.minuty&&!P.jednotka&&P.rezervace!=='stul'?' · '+s.minuty+' min':'')+'</span></div>'}).join('')+'</div>'+
+  '<div class="info"><div><h3>Otevírací doba</h3>'+esc(hodinyText())+'</div><div><h3>Kontakt</h3>'+esc(P.adresa)+'<br>'+esc(P.telefon)+' · '+esc(P.email)+'</div></div>';
+ $('cta').onclick=otevri}
+function panel(){var h='<button class="x" id="fx" aria-label="Zavřít">×</button><h2>Úroveň '+NAZ[U]+'</h2>'+(C.ukazat_ceny&&C.ceny?'<div class="pr">'+esc(C.ceny[U])+'</div>':'<div class="pr">&nbsp;</div>')+'<ul>';
+ FEAT.forEach(function(f){var on=LV[U]>=f[2];h+='<li class="'+(on?'':'off')+(on&&f[2]===LV[U]&&U!=='normal'?' new':'')+'"><i>'+(on?'✓':'–')+'</i><span>'+esc(f[1])+(on?'':' <small>('+NAZ[f[2]===2?'premium':'max']+')</small>')+'</span></li>'});
+ $('feat').innerHTML=h+'</ul>';$('fx').onclick=function(){$('feat').classList.remove('on');$('feat').style.display='none';document.body.classList.add('nofeat')}}
+function srovnani(){var u=['normal','premium','max'],h='<table><thead><tr><th>Funkce</th>'+u.map(function(x){return '<th class="'+(x===U?'cur':'')+'">'+NAZ[x]+'</th>'}).join('')+'</tr></thead><tbody>';
+ FEAT.forEach(function(f){h+='<tr><td>'+esc(f[1])+'</td>'+u.map(function(x){return LV[x]>=f[2]?'<td class="y">✓</td>':'<td class="n">–</td>'}).join('')+'</tr>'});
+ h+='</tbody>'+(C.ukazat_ceny&&C.ceny?'<tfoot><tr><td>Orientační cena</td>'+u.map(function(x){return '<td>'+esc(C.ceny[x])+'</td>'}).join('')+'</tr></tfoot>':'')+'</table>';$('cmpt').innerHTML=h}
+
+/* ---- chat ---- */
+function msg(kdo,html,od){var d=document.createElement('div');d.className='m '+kdo;d.innerHTML=(od?'<small>'+esc(od)+'</small>':'')+html;$('msgs').appendChild(d);$('msgs').scrollTop=1e6}
+function qr(list){$('qr').innerHTML=(list||[]).map(function(x,i){return '<button data-i="'+i+'">'+esc(x[0])+'</button>'}).join('');$('qr').list=list||[]}
+function bot(html,quick,od){busy=true;qr([]);var t=document.createElement('div');t.className='typing';t.innerHTML='<i></i><i></i><i></i>';$('msgs').appendChild(t);$('msgs').scrollTop=1e6;
+ setTimeout(function(){t.remove();msg('bot',html,od);qr(quick);$('msgs').scrollTop=1e6;busy=false},Math.min(1400,380+String(html).length*4))}
+function toast(t,feedOnly){if(MSG)feed(t);if(feedOnly&&innerWidth>=1180)return;var x=$('toast');x.textContent=t;x.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){x.classList.remove('on')},5200)}
+var T={cs:{},en:{hi:'Hello! I am {b}, the AI assistant of {n}. How can I help?',hours:'Opening hours: {h}.',price:'Prices: {p}.',addr:'You will find us at {a}.',contact:'Call us at {t} or write to {e}.',book:'You can book right here. Choose a service:',thanks:'You are welcome!',unk:'Sorry, I am not sure. Please call {t} or leave your number and we will call you back.'},
+ de:{hi:'Hallo! Ich bin {b}, der KI-Assistent von {n}. Wie kann ich helfen?',hours:'Öffnungszeiten: {h}.',price:'Preise: {p}.',addr:'Sie finden uns: {a}.',contact:'Rufen Sie uns an: {t} oder schreiben Sie an {e}.',book:'Sie können hier direkt buchen. Wählen Sie eine Leistung:',thanks:'Gern geschehen!',unk:'Das weiß ich leider nicht. Rufen Sie bitte {t} an oder hinterlassen Sie Ihre Nummer.'}};
+function tr(k){return T[LANG][k].replace('{b}',P.bot).replace('{n}',P.nazev).replace('{t}',P.telefon).replace('{e}',P.email).replace('{a}',P.adresa).replace('{h}',hodinyText(true)).replace('{p}',P.sluzby.slice(0,5).map(function(s){return s.nazev+' '+(s.cena==null?'on request':s.cena+' CZK')}).join(', '))}
+function uvod(){var q=[];if(has('rezervace'))q.push([P.rezervace==='pobyt'?'Volné pokoje':P.rezervace==='stul'?'Rezervovat stůl':'Objednat se','rez']);
+ q.push(['Ceník','cenik'],['Otevírací doba','hodiny'],['Kde vás najdu','adresa']);if(!has('rezervace'))q.push(['Kontakt','kontakt']);if(has('clovek'))q.push(['Mluvit s člověkem','clovek']);return q}
+function pozdrav(){var t='Dobrý den, jsem '+P.bot+', AI asistent '+(P.rezervace==='pobyt'?'hotelu ':'')+P.nazev+'. ';
+ if(has('mimo')){var n=ted();t+=n.otevreno?'Máme otevřeno do '+n.do.replace(/^0/,'')+'. ':'Teď máme zavřeno, otevíráme '+n.kdy+'. Já jsem tu ale pořád. '}
+ bot(esc(t)+'S čím vám můžu pomoct?',uvod())}
+function start(){$('msgs').innerHTML='';S={krok:null};LANG='cs';qr([]);
+ $('av').textContent=P.bot.charAt(0);$('bn').textContent=P.bot+' · '+P.nazev;var n=ted();
+ $('bs').textContent=(MSG?(APP==='telegram'?'bot · ':'firemní účet · '):'')+'AI asistent · '+(has('mimo')&&!n.otevreno?'mimo pracovní dobu':'online');if(MSG)$('bn').textContent=P.nazev;$('dot').className=has('mimo')&&!n.otevreno?'off':'';
+ $('foot').textContent='Asistent využívá umělou inteligenci. Demo připravil '+(C.autor||'Jarvis')+'.';
+ $('mic').hidden=!(has(MSG?'hlasovky':'hlas')&&(window.SpeechRecognition||window.webkitSpeechRecognition));
+ msg('sys','Dnes');pozdrav()}
+
+/* záměry */
+function zamery(){var z=[
+ {id:'rez',n:'Rezervace',k:['rezerv','objednat','termin'],k2:['volno','prijit','zarezerv','objednani','volny','kdy mate cas','stul','pokoj','ubytovani','pobyt']},
+ {id:'cenik',n:'Ceník',k:['cena','cenik','kolik stoji'],k2:['kolik','za kolik','stoji','drahy','price']},
+ {id:'hodiny',n:'Otevírací doba',k:['oteviraci','otevreno','hodiny'],k2:['kdy mate','do kolika','od kolika','zavira','oteviraj','dnes otevr','zitra otevr']},
+ {id:'adresa',n:'Adresa a parkování',k:['adresa','kde'],k2:['jak se k vam','najdu','mapa','lokalita','sidlite']},
+ {id:'kontakt',n:'Kontakt',k:['telefon','kontakt','email'],k2:['cislo','zavolat','napsat','mail']},
+ {id:'sluzby',n:'Ceník',k:['sluzby','nabizite'],k2:['co delate','co umite','nabidka']},
+ {id:'zpet',n:'Poptávka',k:['zavolejte','ozvete'],k2:['poptav','nabidku','cenovou','callback','kontaktujte']},
+ {id:'clovek',n:'Člověk',k:['clovek','operator'],k2:['majitel','zivy','mluvit s','realny','obsluh']},
+ {id:'dekuji',n:'Ostatní',k:['dekuji','diky'],k2:['super','paradni','dik']},
+ {id:'ahoj',n:'Ostatní',k:['ahoj','dobry den','zdravim'],k2:['cau','nazdar','dobry vecer']}];
+ P.faq.forEach(function(f,i){z.push({id:'faq'+i,n:'Ostatní',k:f.k,k2:f.k2,a:f.a})});
+ P.sluzby.concat(P.extra||[]).forEach(function(s){var w=norm(s.nazev).split(' ').filter(function(x){return x.length>=4&&['pro','pred','osob','pneu'].indexOf(x)<0}).map(function(x){return x.slice(0,Math.max(4,x.length-2))});if(w.length)z.push({id:'svc',svc:s.id,n:'Ceník',k:w,k2:[]})});
+ return z}
+function pochop(text){var t=norm(text),tok=t.split(' '),best=null,bs=0;if(t==='stop')return{id:'stop',n:'Ostatní'};
+ zamery().forEach(function(z){var s=0;z.k.forEach(function(k){if(obsahuje(t,tok,k))s+=2});if(has('volne'))z.k2.forEach(function(k){if(obsahuje(t,tok,k))s+=1});
+  if(z.id==='svc'&&s)s+=0.5;if(s>bs){bs=s;best=z}});
+ /* rezervace + konkrétní služba = rovnou rezervovat tu službu */
+ if(best&&bs){var svc=null,cis=(' '+t+' ').replace(/ (dva|dve|dvou) /g,' 2 ').replace(/ (ctyri|ctyr) /g,' 4 ').replace(/ (sest|sesti) /g,' 6 ');zamery().forEach(function(z){if(z.id==='svc'&&z.k.some(function(k){return obsahuje(t,tok,k)})){var d=(sl(z.svc).nazev.match(/\d+/)||[])[0];if(d&&cis.indexOf(' '+d+' ')>=0)svc=z.svc;else svc=svc||z.svc}});
+  if(best.id==='svc'&&svc)best={id:'svc',n:best.n,svc:svc,k:best.k,k2:[]};
+  if(best.id==='rez'&&svc)best={id:'rez',n:'Rezervace',svc:svc};else if(best.id==='svc'&&['rezerv','objednat','termin'].some(function(k){return obsahuje(t,tok,k)}))best={id:'rez',n:'Rezervace',svc:best.svc}}
+ return bs?best:null}
+function jazyk(t){if(!has('jazyky'))return 'cs';var w=' '+norm(t)+' ';
+ if(/ (hello|hi|price|prices|opening|hours|where|book|booking|address|thanks|thank you|english|room|how much|available) /.test(w))return 'en';
+ if(/ (hallo|guten|preis|preise|offnungszeiten|wo ist|buchen|danke|zimmer|deutsch) /.test(w))return 'de';return 'cs'}
+
+function odpovez(text){
+ if(S.krok)return krok(text);
+ var L=jazyk(text);LANG=L;
+ if(L!=='cs'){var t=norm(text),key=/price|preis|how much|kost/.test(t)?'price':/hour|open|offnung|zeit/.test(t)?'hours':/where|address|wo /.test(' '+t)?'addr':/book|buch|room|zimmer|available/.test(t)?'book':/thank|danke/.test(t)?'thanks':/hello|hi|hallo|guten/.test(t)?'hi':/phone|call|contact|kontakt|anruf/.test(t)?'contact':'unk';
+  zaznam(key==='unk'?null:'Ostatní',text,key!=='unk');if(key==='book'&&has('rezervace'))return rez(null,tr('book'));return bot(esc(tr(key)),uvod())}
+ var z=pochop(text);zaznam(z?z.n:null,text,!!z);
+ if(!z){LANG='cs';if(has('lead'))return bot('Na tohle vám teď přesně neodpovím, ale zjistím to. Nechte mi kontakt a ozveme se vám, nebo zavolejte na '+esc(P.telefon)+'.',[['Nechat kontakt','zpet']].concat(uvod().slice(0,2)));
+  return bot('Na tohle bohužel neumím odpovědět. Zavolejte nám prosím na <a href="tel:'+esc(P.telefon.replace(/\s/g,''))+'">'+esc(P.telefon)+'</a> nebo napište na '+esc(P.email)+'.',uvod())}
+ akce(z.id,z)}
+function akce(id,z){z=z||{};
+ if(id==='rez')return has('rezervace')?rez(z.svc):bot('Objednat se můžete telefonicky na <a href="tel:'+esc(P.telefon.replace(/\s/g,''))+'">'+esc(P.telefon)+'</a> nebo e-mailem na '+esc(P.email)+'.',uvod());
+ if(id==='cenik'||id==='sluzby'){var f=P.faq.filter(function(x){return x.a==='MENU'})[0];
+  var l=(P.menu&&id==='cenik'?P.menu:P.sluzby).map(function(s){return '• '+esc(s.nazev)+' – '+kc(s.cena)+(P.jednotka?' / '+P.jednotka:'')}).join('\n');
+  return bot((P.jednotka?'Ceny za noc včetně snídaně:\n':'Tady je náš ceník:\n')+l+(has('rezervace')?'\n\nChcete si rovnou vybrat termín?':''),has('rezervace')?[['Ano, vybrat termín','rez']].concat(uvod().slice(1,3)):uvod())}
+ if(id==='hodiny'){var t='Otevírací doba: '+hodinyText()+'.';if(has('mimo')){var n=ted();t+=n.otevreno?'\nTeď máme otevřeno do '+n.do.replace(/^0/,'')+'.':'\nTeď máme zavřeno, otevíráme '+n.kdy+'.'+(has('lead')?' Můžu vám nechat zavolat, jakmile otevřeme.':'')}
+  return bot(esc(t),has('mimo')&&!ted().otevreno&&has('lead')?[['Ať mi zavolají','zpet']].concat(uvod().slice(0,2)):uvod())}
+ if(id==='adresa'){var pk=P.faq.filter(function(x){return x.k.indexOf('parkovani')>=0})[0];return bot('Najdete nás na adrese '+esc(P.adresa)+'.'+(pk&&has('volne')?'\n'+esc(pk.a):''),uvod())}
+ if(id==='kontakt')return bot('Zavolejte nám na <a href="tel:'+esc(P.telefon.replace(/\s/g,''))+'">'+esc(P.telefon)+'</a> nebo napište na '+esc(P.email)+'.',uvod());
+ if(id==='zpet')return has('lead')?lead():akce('kontakt');
+ if(id==='clovek'){if(!has('clovek'))return bot('Živého kolegu vám tady přepojit neumím. Zavolejte prosím na <a href="tel:'+esc(P.telefon.replace(/\s/g,''))+'">'+esc(P.telefon)+'</a>.',uvod());
+  bot('Přepojuji vás na kolegu. Chvilku strpení…');poptavka('Žádost o člověka v chatu');
+  setTimeout(function(){var who=(P.lide&&P.lide[0])||'obsluha';msg('hum','Dobrý den, tady '+esc(who)+' z '+esc(P.nazev)+'. Jak vám můžu pomoct?',who+' · člověk');toast('📱 Majitel dostal upozornění: zákazník chce mluvit s člověkem. V ostré verzi odpovídá z mobilu.')},3200);return}
+ if(id==='pripominka'){var pr=S.posledni||{svc:P.sluzby[0].nazev,cas:'9:00'};msg('sys','— den předem v 18:00 —');
+  toast('⏰ Bot sám poslal zákazníkovi připomínku termínu.',true);return bot('Dobrý večer! Připomínáme zítřejší termín: '+esc(pr.svc)+' v '+esc(pr.cas||'')+'. Platí?',[['✓ Potvrzuji','potvrzuji'],['Přesunout','rez'],['Zrušit termín','storno']])}
+ if(id==='potvrzuji'){toast('✅ Zákazník potvrdil zítřejší termín.',true);return bot('Děkujeme, těšíme se na vás!',uvod())}
+ if(id==='storno'){toast('❌ Zákazník zrušil termín, čas se uvolnil pro další rezervace.',true);return bot('Termín jsem zrušil. Kdybyste chtěli nový, stačí napsat.',uvod())}
+ if(id==='stop'){toast('🔕 Zákazník se odhlásil z novinek.',true);return bot('Odhlásili jsme vás z novinek. Rezervace a dotazy fungují dál.',uvod())}
+ if(id==='dekuji')return bot('Rádo se stalo! Kdybyste ještě něco potřebovali, jsem tady.',uvod());
+ if(id==='ahoj')return bot('Dobrý den! S čím vám můžu pomoct?',uvod());
+ if(id==='svc'){var s=sl(z.svc),d=s.nazev+' stojí '+kc(s.cena)+(P.jednotka?' za '+P.jednotka:'')+(s.minuty&&!P.jednotka&&P.rezervace!=='stul'?' a trvá asi '+s.minuty+' minut':'')+'.';
+  if(has('upsell')&&P.doporuc[s.id]&&sl(P.doporuc[s.id]))d+='\nČasto se k tomu hodí také: '+sl(P.doporuc[s.id]).nazev+' ('+kc(sl(P.doporuc[s.id]).cena)+').';
+  return bot(esc(d),has('rezervace')&&P.sluzby.some(function(x){return x.id===s.id})?[['Rezervovat '+s.nazev.toLowerCase(),'rez:'+s.id]].concat(uvod().slice(1,3)):uvod())}
+ if(z.a){if(z.a==='MENU')return akce('cenik',{});return bot(esc(z.a),uvod())}}
+
+/* rezervace v chatu */
+function dny(n){var o=[],d=new Date();for(var i=0;o.length<n&&i<30;i++){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()+i),h=P.hodiny[DNY[x.getDay()]];if(!h)continue;
+ if(i===0&&P.rezervace!=='pobyt'&&d.getHours()*60+d.getMinutes()>mn(h[1])-90)continue;o.push(x)}return o}
+function denTxt(x){var d=new Date();if(x.toDateString()===d.toDateString())return 'Dnes';var z=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);if(x.toDateString()===z.toDateString())return 'Zítra';return DNYN[x.getDay()]+' '+x.getDate()+'. '+(x.getMonth()+1)+'.'}
+function casy(x,svc){var h=P.hodiny[DNY[x.getDay()]],s=sl(svc),dur=s.minuty||60,o=[],d=new Date(),krok=P.rezervace==='stul'?30:60,od=mn(h[0])+(P.rezervace==='stul'?30:0);
+ for(var m=od;m+Math.min(dur,90)<=mn(h[1]);m+=krok){if(x.toDateString()===d.toDateString()&&m<d.getHours()*60+d.getMinutes()+60)continue;
+  var hs=0,k=x.getDate()+'-'+m+svc;for(var i=0;i<k.length;i++)hs=(hs*31+k.charCodeAt(i))%997;if(hs%3===0)continue;o.push(m)}return o.slice(0,8)}
+function rez(svc,uvodText){S={krok:'svc',typ:P.rezervace};if(svc)return vybranaSluzba(svc);
+ var l=P.sluzby.map(function(s){return [s.nazev+(s.cena?' · '+kc(s.cena)+(P.jednotka?'/'+P.jednotka:''):''),'s:'+s.id]});
+ bot(esc(uvodText||(P.rezervace==='pobyt'?'Rád vám najdu pokoj. Jaký typ pokoje chcete?':P.rezervace==='stul'?'Rád vám podržím stůl. Pro kolik lidí?':'Rád vás objednám. Kterou službu chcete?')),l.concat([['Zrušit','zrusit']]))}
+function vybranaSluzba(id){S.svc=id;S.extra=null;var dop=P.doporuc[id];
+ if(has('upsell')&&dop&&sl(dop)){S.krok='upsell';return bot('Výborná volba. Hodí se k tomu také: '+esc(sl(dop).nazev)+' za '+kc(sl(dop).cena)+'. Chcete to přidat?',[['Ano, přidat','up:ano'],['Ne, děkuji','up:ne']])}
+ vyberDen()}
+function vyberDen(pre){S.krok='den';var l=dny(P.rezervace==='pobyt'?8:6).map(function(x){return [denTxt(x),'d:'+x.toISOString()]});
+ bot((pre?pre+' ':'')+(P.rezervace==='pobyt'?'Kdy přijedete?':'Který den se vám hodí?'),l.concat([['Zrušit','zrusit']]))}
+function krok(text,data){var k=S.krok;
+ if(data==='zrusit'||norm(text)==='zrusit'){S={krok:null};return bot('Dobře, rezervaci jsem zrušil. Můžu pomoct s něčím jiným?',uvod())}
+ if(k==='svc'){var z=data&&data.indexOf('s:')===0?data.slice(2):(pochop(text)||{}).svc;if(!z)return rez(null,'Vyberte prosím z nabídky:');return vybranaSluzba(z)}
+ if(k==='upsell'){if(data==='up:ano'||/^ano|jo|prid/.test(norm(text)))S.extra=P.doporuc[S.svc];return vyberDen()}
+ if(k==='den'){if(!data||data.indexOf('d:')!==0)return vyberDen('Vyberte prosím z nabídky.');S.den=new Date(data.slice(2));
+  if(P.rezervace==='pobyt'){S.krok='noci';return bot('Na kolik nocí?',[['1 noc','n:1'],['2 noci','n:2'],['3 noci','n:3'],['5 nocí','n:5'],['7 nocí','n:7']])}
+  var c=casy(S.den,S.svc);if(!c.length)return vyberDen('Ten den už je plno.');
+  S.krok='cas';return bot(denTxt(S.den)+' mám volno v těchto časech:',c.map(function(m){return [hm(m),'c:'+m]}).concat([['Jiný den','jiny']]))}
+ if(k==='noci'){var n=data&&data.indexOf('n:')===0?+data.slice(2):parseInt(norm(text),10);if(!n)return bot('Napište prosím počet nocí.');S.noci=n;S.krok='jmeno';return bot('Skvělé. Na jaké jméno?')}
+ if(k==='cas'){if(data==='jiny')return vyberDen();if(!data||data.indexOf('c:')!==0)return bot('Vyberte prosím čas z nabídky.');S.cas=+data.slice(2);S.krok='jmeno';return bot('Super, '+denTxt(S.den).toLowerCase().replace(/^(po|út|st|čt|pá|so|ne) /,function(x){return x})+' v '+hm(S.cas)+'. Na jaké jméno?')}
+ if(k==='jmeno'){if(norm(text).length<3)return bot('Napište prosím jméno a příjmení.');S.jmeno=text.trim();S.krok='tel';return bot('Díky. A telefon, kdybychom potřebovali něco upřesnit?')}
+ if(k==='tel'){if(String(text).replace(/\D/g,'').length<9)return bot('Telefon by měl mít aspoň 9 číslic, zkusíte to znovu?');S.tel=text.trim();return hotovo()}
+ if(k==='lead_jmeno'){if(norm(text).length<3)return bot('Napište prosím jméno.');S.jmeno=text.trim();S.krok='lead_tel';return bot('A na jaké číslo vám máme zavolat?')}
+ if(k==='lead_tel'){if(String(text).replace(/\D/g,'').length<9)return bot('Telefon by měl mít aspoň 9 číslic.');S.tel=text.trim();S.krok=null;
+  poptavka('Poptávka: zavolat zpět – '+S.jmeno);toast('📧 Majitel dostal e-mail: „Zavolejte zpět – '+S.jmeno+', '+S.tel+'“'+(has('prehled')?' · záznam je i v přehledu':''));
+  return bot('Děkuji, '+esc(S.jmeno.split(' ')[0])+'. Předal jsem to, ozveme se vám co nejdřív'+(ted().otevreno?'.':', jakmile otevřeme.'),uvod())}}
+function lead(){S={krok:'lead_jmeno'};bot('Rád to předám. Jak se jmenujete?')}
+function hotovo(){var s=sl(S.svc),ex=S.extra?sl(S.extra):null,t;
+ if(P.rezervace==='pobyt'){var cena=(s.cena||0)*S.noci+(ex?ex.cena:0);t='Hotovo! Poptávka pobytu:\n• '+s.nazev+', '+S.noci+' '+(S.noci===1?'noc':S.noci<5?'noci':'nocí')+' od '+denTxt(S.den).toLowerCase()+(ex?'\n• '+ex.nazev:'')+'\n• Orientačně '+kc(cena)+'\nRecepce vám potvrdí rezervaci do hodiny.'}
+ else t='Hotovo, máte rezervováno!\n• '+s.nazev+(ex?' + '+ex.nazev.toLowerCase():'')+'\n• '+denTxt(S.den)+' v '+hm(S.cas)+'\n• '+P.adresa+'\nPotvrzení vám přijde SMS. Kdyby se něco změnilo, stačí napsat sem.';
+ var r=(P.rezervace==='pobyt'?'Pobyt':'Rezervace')+': '+s.nazev+' – '+S.jmeno;poptavka(r);var pos={svc:s.nazev,cas:P.rezervace==='pobyt'?null:hm(S.cas||0)};S={krok:null,posledni:pos};
+ bot(esc(t),[['Děkuji','dekuji'],['Kde vás najdu','adresa']].concat(has('pripominky')&&P.rezervace!=='pobyt'?[['▶ Ukázat připomínku den předem','pripominka']]:[]));toast('📧 Majitel dostal e-mail: „'+r+'“'+(has('prehled')?' · 📱 SMS zákazníkovi a záznam v přehledu':''))}
+
+/* vstupy */
+function poslat(text,data){if(busy)return;text=String(text||'').trim();if(!text)return;msg('me',esc(text));$('q').value='';
+ if(data&&!S.krok){if(data==='rez')return akce('rez');if(data.indexOf('rez:')===0)return akce('rez',{svc:data.slice(4)});return akce(data)}
+ if(S.krok)return krok(text,data);odpovez(text)}
+$('qr').onclick=function(e){var b=e.target.closest('button');if(!b)return;var x=$('qr').list[+b.getAttribute('data-i')];poslat(x[0],x[1])};
+$('in').onsubmit=function(e){e.preventDefault();poslat($('q').value)};
+function otevri(){$('cw').hidden=false;$('lau').hidden=true;setTimeout(function(){$('q').focus()},60)}
+$('cl').onclick=function(){$('cw').hidden=true;$('lau').hidden=false};$('lau').onclick=otevri;
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+$('mic').onclick=function(){if(!SR)return;var r=new SR();r.lang=LANG==='en'?'en-US':LANG==='de'?'de-DE':'cs-CZ';r.interimResults=true;$('mic').classList.add('on');
+ r.onresult=function(e){var t='';for(var i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$('q').value=t};
+ r.onend=function(){$('mic').classList.remove('on');if($('q').value.trim())poslat($('q').value)};r.onerror=function(){$('mic').classList.remove('on')};try{r.start()}catch(e){}};
+
+/* režim bot v telefonu */
+function feed(t){var f=$('feed');if(!f)return;f.insertAdjacentHTML('afterbegin','<div class="it"><small>'+new Date().toTimeString().slice(0,5)+'</small>'+esc(t)+'</div>')}
+function feedReset(){$('feed').innerHTML='';$('feedi').textContent=U==='normal'?'Normální: bot odpovídá na dotazy. Rezervace a poptávky řeší zákazník telefonem, majitel nic nedostává.':U==='premium'?'Premium: rezervace a poptávky chodí majiteli e-mailem, bot sám posílá připomínky.':'Premium Max: navíc hlasové zprávy, akce pro stálé zákazníky, předání člověku a přehled.';
+ ['hlv','kamp'].forEach(function(i){$(i).setAttribute('aria-disabled',String(!has(i==='hlv'?'hlasovky':'kampane')))})}
+$('hlv').onclick=function(){if(!has('hlasovky'))return toast('Hlasové zprávy jsou součástí Premium Max.');if(busy)return;
+ var vz={pobyt:'Dobrý den, máte volný pokoj na víkend pro dva?',stul:'Ahoj, máte dneska večer volný stůl pro čtyři?',termin:'Dobrý den, kolik stojí '+P.sluzby[0].nazev.toLowerCase()+'?'}[P.rezervace];
+ msg('me','<span class="vm"><b>▶</b><i></i><small>0:04</small></span>');setTimeout(function(){msg('sys','🎙 přepis: „'+esc(vz)+'“');odpovez(vz)},700)};
+$('kamp').onclick=function(){if(!has('kampane'))return toast('Akce pro stálé zákazníky jsou součástí Premium Max.');if(busy)return;var s=P.menu?{id:P.sluzby[0].id,nazev:P.menu[1].nazev}:P.sluzby[P.sluzby.length>1?1:0];
+ toast('📣 Akce odešla 214 stálým zákazníkům, kteří souhlasili s novinkami (ukázka).',true);msg('sys','— zpráva od '+esc(P.nazev)+' —');
+ bot('🎁 Akce pro stálé zákazníky: tento týden −15 % na '+esc(s.nazev.toLowerCase())+'. Termín si můžete vybrat rovnou tady.\n(Odhlásit z novinek: napište STOP)',[['Chci termín','rez:'+s.id],['STOP','stop']])};
+$('app').onchange=function(){APP=$('app').value;nastav()};
+
+/* přehled majitele */
+function dash(){if(!has('prehled')){toast('Přehled pro majitele je součástí úrovně Premium Max.');return}
+ var x=st(),tot=0,k;for(k in x.intent)tot+=x.intent[k];var srt=Object.keys(x.intent).sort(function(a,b){return x.intent[b]-x.intent[a]}),mx=x.intent[srt[0]]||1;
+ $('dsub').textContent=P.nazev+' · posledních 30 dní · ukázková data, vaše zprávy z dema se přičítají';
+ $('dash').innerHTML='<div class="kpi"><div><span>Konverzace</span><b>'+x.konverzace+'</b></div><div><span>Zpráv celkem</span><b>'+x.zpravy+'</b></div><div><span>Vyřízeno bez člověka</span><b>'+Math.round(x.auto*100)+' %</b></div><div><span>Ušetřený čas</span><b>~'+Math.round(x.zpravy*1.5/60)+' h</b></div></div>'+
+  '<div class="cols"><div><h3>Na co se zákazníci ptají</h3><div class="bars">'+srt.map(function(n){return '<div><span>'+esc(n)+'</span><i style="width:'+Math.round(x.intent[n]/mx*100)+'%"></i><b>'+x.intent[n]+'</b></div>'}).join('')+'</div>'+
+  '<h3 style="margin-top:16px">Na tohle bot neuměl odpovědět</h3><div class="list">'+x.nezodp.map(function(q){return '<div>„'+esc(q)+'“ <span class="tag">doplnit odpověď</span></div>'}).join('')+'</div></div>'+
+  '<div><h3>Poptávky a rezervace z chatu</h3><div class="list">'+x.poptavky.map(function(p){return '<div>'+esc(p.text)+'<br><small>'+esc(p.cas)+(p.u?' · ukázka':'')+'</small></div>'}).join('')+'</div></div></div>';
+ $('ovd').classList.add('on')}
+
+/* přepínače */
+function nastav(){P=OBORY[OB];document.body.classList.toggle('msg',MSG);document.body.setAttribute('data-app',APP);$('app').hidden=!MSG;$('app').value=APP;
+ $('dtit').textContent=MSG?"Ukázka pro Autoservis Miroslav Číž":"Ukázka pro Autoservis Miroslav Číž";if(MSG){$('cw').hidden=false;feedReset()}['normal','premium','max'].forEach(function(u){var b=document.querySelector('[data-u="'+u+'"]');b.setAttribute('aria-pressed',String(u===U))});
+ $('ob').value=OB;$('dbtn').toggleAttribute('disabled',!has('prehled'));$('dbtn').title=has('prehled')?'':'Jen v Premium Max';
+ var u=new URL(location.href);u.searchParams.set('uroven',U);u.searchParams.set('obor',OB);if(MSG)u.searchParams.set('aplikace',APP);history.replaceState(null,'',u);
+ web();panel();start()}
+$('ob').innerHTML=Object.keys(OBORY).map(function(k){return '<option value="'+k+'">'+esc(k==='vlastni'?OBORY[k].nazev:OBORY[k].obor)+'</option>'}).join('');
+if(!C.prepinace){$('lv').hidden=true;$('ob').hidden=true;$('cmp').hidden=true;$('fbtn').hidden=true;$('feat').hidden=true}
+$('lv').onclick=function(e){var b=e.target.closest('[data-u]');if(!b)return;U=b.getAttribute('data-u');nastav();toast('Úroveň '+NAZ[U]+(C.ukazat_ceny&&C.ceny?' · '+C.ceny[U]:''))};
+$('ob').onchange=function(){OB=$('ob').value;nastav()};
+$('rst').onclick=start;$('cmp').onclick=function(){srovnani();$('ovc').classList.add('on')};$('dbtn').onclick=dash;
+$('fbtn').onclick=function(){var f=$('feat');f.style.display='';document.body.classList.remove('nofeat');f.classList.toggle('on')};
+document.querySelectorAll('.ov').forEach(function(o){o.onclick=function(e){if(e.target===o||e.target.hasAttribute('data-close'))o.classList.remove('on')}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.ov.on').forEach(function(o){o.classList.remove('on')})});
+if(!MSG&&matchMedia('(max-width:560px)').matches){$('cw').hidden=true;$('lau').hidden=false}
+nastav();
+})();
+</script>
+<div class="mp-ceduka" role="note">Ukázkový návrh, který pro <b>Autoservis Miroslav Číž</b> připravila Firma MP (Petr Krotký a Michael Stonawski, <a href="mailto:mp.cz.firma@gmail.com">mp.cz.firma@gmail.com</a>). Nejde o oficiální stránku firmy. Údaje jsou převzaté z jejího veřejného webu, ceny a texty jsou k ověření. Vše, co si tu vyzkoušíte, se ukládá jen ve vašem prohlížeči.</div>
+</body>
+</html>
